@@ -113,36 +113,44 @@ def iterate_pagerank(corpus, damping_factor):
     pageranks = dict()
 
     N = len(corpus)
-    threshold = 0.001
+    threshold = 0.0005
 
     # set the initial rank for each page
     for key in corpus.keys():
         pageranks[key] = 1 / N
-    
+
     while True:
-        count = 0
+        newPageranks = dict()
 
         for key in corpus.keys():
-            new = (1 - damping_factor) / N
-            otherPages = 0
+            newRank = (1 - damping_factor) / N
+            otherPagesRank = 0
 
             for page in corpus.keys():
                 if key in corpus[page]:
-                    num_links = len(corpus[page])
-                    otherPages = otherPages + pageranks[page] / num_links
+                    numLinks = len(corpus[page])
+                    otherPagesRank += pageranks[page] / numLinks
 
-            otherPages = damping_factor * otherPages
-            new += otherPages
+            otherPagesRank = damping_factor * otherPagesRank
+            newRank += otherPagesRank
+            newPageranks[key] = newRank
 
-            if abs(pageranks[key] - new) < threshold:
-                count += 1
-            
-            pageranks[key] = new
-        
-        if count == N:
+        # Check for convergence
+        convergence = all(abs(newPageranks[key] - pageranks[key]) < threshold for key in corpus.keys())
+
+        if convergence:
             break
 
+        # Update the pageranks for the next iteration
+        pageranks = newPageranks
+
+    # Normalize the final pageranks to ensure they sum up to 1
+    totalPagerank = sum(pageranks.values())
+    for key in pageranks.keys():
+        pageranks[key] /= totalPagerank
+
     return pageranks
+
     
 
 if __name__ == "__main__":
