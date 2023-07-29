@@ -14,14 +14,10 @@ CKnave = Symbol("C is a Knave")
 knowledge0 = And(
     Or(AKnight, AKnave),
     Not(And(AKnight, AKnave)),
-    Or(BKnight, BKnave),
-    Not(And(BKnight, BKnave)),
-    Or(CKnight, CKnave),
-    Not(And(CKnight, CKnave)),
+    
 
     Implication(AKnight, And(AKnight, AKnave)),
-    Implication(AKnave, Not(And(AKnight, AKnave))),
-
+    Implication(AKnave, Not(And(AKnight, AKnave)))
 )
 
 # Puzzle 1
@@ -32,9 +28,6 @@ knowledge1 = And(
     Not(And(AKnight, AKnave)),
     Or(BKnight, BKnave),
     Not(And(BKnight, BKnave)),
-    Or(CKnight, CKnave),
-    Not(And(CKnight, CKnave)),
-
     
     Implication(AKnight, And(AKnave, BKnave)),
     Implication(AKnave, Not(And(AKnave, BKnave)))
@@ -48,16 +41,14 @@ knowledge2 = And(
     Not(And(AKnight, AKnave)),
     Or(BKnight, BKnave),
     Not(And(BKnight, BKnave)),
-    Or(CKnight, CKnave),
-    Not(And(CKnight, CKnave)),
 
     # A
-    Implication(AKnight, And(AKnight, BKnight)),
-    Implication(AKnave, Not(And(AKnave, BKnave))),
+    Implication(AKnight, Or(And(AKnight, BKnight), And(AKnave, BKnave))),
+    Implication(AKnave, Not(Or(And(AKnight, BKnight), And(AKnave, BKnave)))),
 
     # B
-    Implication(BKnight, And(AKnave, BKnight)),
-    Implication(BKnave, And(Not(And(AKnight, BKnave)), Not(And(AKnave, BKnight)))),
+    Implication(BKnight, Or(And(AKnight, BKnave), And(AKnave, BKnight))),
+    Implication(BKnave, Not(Or(And(AKnight, BKnave), And(AKnave, BKnight))))
 )
 
 # Puzzle 3
@@ -74,12 +65,16 @@ knowledge3 = And(
     Not(And(CKnight, CKnave)),
 
     # A
-    Implication(AKnight, And(AKnight, BKnave)),
-    Implication(AKnave, And(AKnave, BKnave)),
-
-    # B
-    Implication(BKnight, CKnave),
+    Implication(BKnave, And(
+      Implication(AKnave, Not(AKnight)), Implication(AKnight, AKnight)
+    )),
     Implication(BKnave, Not(CKnave)),
+
+     # B
+    Implication(BKnight, And(
+      Implication(AKnave, Not(AKnave)), Implication(AKnight, AKnave),
+    )),
+    Implication(BKnight, CKnave),
 
     # C
     Implication(CKnight, AKnight),
