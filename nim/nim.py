@@ -166,7 +166,6 @@ class NimAI():
         if randomNumber <= epsilon:
             return random.choice(list(actions))
         else:
-            bestActions = None
             bestActionValue = float('-inf')
             for action in actions:
                 value = self.get_q_value(state, action)
