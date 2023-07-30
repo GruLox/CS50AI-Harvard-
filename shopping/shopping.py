@@ -128,13 +128,14 @@ def evaluate(labels, predictions):
     
     sensitivity = (predictedPositives - incorrectPositives) / predictedPositives
     specificity = (predictedNegatives - incorrectNegatives) / predictedNegatives
+    
     return (sensitivity, specificity)
            
 
 def get_month_index_from_string(date_string, date_format="%b"):
     try:
         parsed_date = datetime.strptime(date_string, date_format)
-        return parsed_date.month
+        return parsed_date.month - 1
     except ValueError:
         return None
 
